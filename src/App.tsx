@@ -35,9 +35,9 @@ function App() {
 				)}
 				{user !== "" && (
 					<div>
-				<Header onLogout={handleLogout} name={user} />
-				<div className="grid grid-cols-1 landscape:grid-cols-10 gap-4 p-4">
-					<SeatOrderCard className="landscape:col-span-6 shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" onSeatBooked={handleSeatBooked} />
+			<Header onLogout={handleLogout} name={user} />
+			<div className="grid grid-cols-1 landscape:grid-cols-10 gap-4 p-4 landscape:items-start">
+				<SeatOrderCard className="landscape:col-span-6 shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" onSeatBooked={handleSeatBooked} />
 					<div className="landscape:col-span-4 space-y-4">
 						<StatisticCard className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" />
 						{seatBooking && (
