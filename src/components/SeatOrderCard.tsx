@@ -130,13 +130,13 @@ export default function SeatOrderCard({
 											<div className="flex-1 min-w-0">
 												<p className="font-medium text-xs">
 													{location.name}
-												</p>
-											</div>
+											</p>
 										</div>
-										<p className="text-xs text-gray-500 text-left">
-											Mô tả ngắn gọn
-										</p>
-									</RadioGroupCardContent>
+									</div>
+									<p className="text-xs text-gray-500 text-left">
+										{location.description}
+									</p>
+								</RadioGroupCardContent>
 								</RadioGroupCardItem>
 							))}
 						</RadioGroupCard>

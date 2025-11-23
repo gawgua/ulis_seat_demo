@@ -45,11 +45,11 @@ export const SLOT_CONFIG = {
 };
 
 export const LOCATIONS = [
-	{ id: "library", name: "Thư viện", icon: LibraryBig },
-	{ id: "canteen", name: "Căng tin B2", icon: Hamburger },
-	{ id: "homies_b2", name: "Homies B2", icon: Landmark },
-	{ id: "homies_c3", name: "Homies C3", icon: Landmark },
-	{ id: "homies_multi", name: "Homies Đa năng", icon: Landmark },
+	{ id: "library", name: "Thư viện", icon: LibraryBig, description: "Tầng 2 tòa C3" },
+	{ id: "canteen", name: "Căng tin B2", icon: Hamburger, description: "Tiện lợi, gần khu vực ăn uống" },
+	{ id: "homies_b2", name: "Homies B2", icon: Landmark, description: "Không gian hiện đại, thoải mái" },
+	{ id: "homies_c3", name: "Homies C3", icon: Landmark, description: "Tầng 1 tòa C3" },
+	{ id: "homies_multi", name: "Homies Đa năng", icon: Landmark, description: "Không gian tự học" },
 ];
 
 const HOMIES_C3_SEAT_MAP = [
