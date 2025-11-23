@@ -13,7 +13,7 @@ import {
 	RadioGroupCardItem,
 } from "./ui/radio-group-card";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "./ui/tabs";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import TimeChoose from "./TimeChoose";
 import { LOCATIONS, SEAT_MAP, SLOT_CONFIG } from "@/lib/data";
 import { Slider } from "./ui/slider";
@@ -110,7 +110,7 @@ export default function SeatOrderCard({
 			<CardContent className="landscape:grid landscape:grid-cols-2 landscape:gap-4">
 				<div className="space-y-4 mb-4 landscape:mb-0">
 					<div>
-						<p>Địa điểm</p>
+						<p className="mb-2">Địa điểm</p>
 						<RadioGroupCard
 							defaultValue="library"
 							className="grid grid-cols-2 sm:grid-cols-3 gap-4"
@@ -142,7 +142,7 @@ export default function SeatOrderCard({
 						</RadioGroupCard>
 					</div>
 					<div>
-						<p>Loại bàn</p>
+						<p className="mb-2">Loại bàn</p>
 						<Tabs
 							defaultValue="personal"
 							onValueChange={handleTableTypeChange}
@@ -162,11 +162,8 @@ export default function SeatOrderCard({
 									<UsersRound /> Nhóm
 								</TabsTrigger>
 							</TabsList>
-							<TabsContent value="personal">
-								<p>Chọn bàn cá nhân</p>
-							</TabsContent>
 							<TabsContent value="group">
-							<p>Chọn bàn nhóm</p>
+							<p className="mb-2">Chọn số người</p>
 							<div className="flex items-center gap-4">
 								<Slider
 									min={2}
@@ -183,14 +180,17 @@ export default function SeatOrderCard({
 							</TabsContent>
 						</Tabs>
 					</div>
-					<TimeChoose
-						timeslot={
-							SLOT_CONFIG[
-								type.split("_")[0] as keyof typeof SLOT_CONFIG
-							].slots
-						}
-						onTimeSelect={setSelectedTime}
-					/>
+					<div>
+						<p className="mb-2">Chọn khung giờ</p>
+						<TimeChoose
+							timeslot={
+								SLOT_CONFIG[
+									type.split("_")[0] as keyof typeof SLOT_CONFIG
+								].slots
+							}
+							onTimeSelect={setSelectedTime}
+						/>
+					</div>
 				</div>
 				<div className="landscape:h-full">
 					<SeatMapHolder

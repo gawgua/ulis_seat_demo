@@ -35,13 +35,13 @@ export default function CurrentSeatCard({
 
 	return (<Card className={cn("h-fit", className)}>
 		<CardHeader>
-			<CardTitle className="text-xl">Chỗ ngồi hiện tại</CardTitle>
+			<CardTitle className="text-xl">Phiên hiện tại</CardTitle>
 		</CardHeader>
 		<Separator />
 		<CardContent>
 			<div className="space-y-2">
 				<p className="text-lg">
-					<strong>Chỗ ngồi hiện tại:</strong> {seatId || "Chưa có chỗ ngồi"}
+					<strong>Chỗ ngồi:</strong> {seatId || "Chưa có chỗ ngồi"}
 				</p>
 				{seatId && (
 					<>

@@ -6,7 +6,7 @@ import { Info } from "lucide-react";
 export default function SeatMapHolder({ seats, onSeatSelect }: SeatMapProps) {
 	return (
 		<div className="h-full flex flex-col">
-			<p>Sơ đồ chỗ ngồi</p>
+			<p className="mb-2">Sơ đồ chỗ ngồi</p>
 			<div className="flex flex-wrap gap-4 mb-2">
 				{SEAT_LEGEND.map((item) => (
 					<div

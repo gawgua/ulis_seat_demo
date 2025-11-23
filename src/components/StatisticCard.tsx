@@ -27,7 +27,7 @@ export default function StatisticCard({
 
 	return (
 		<Card className={cn("h-fit", className)}>
-			<CardHeader className="pb-3">
+			<CardHeader>
 				<CardTitle className="text-xl">Tổng quan hôm nay</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
