@@ -25,6 +25,10 @@ function App() {
 		}
 	};
 
+	const handleEndSession = () => {
+		setSeatBooking(null);
+	};
+
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="pt-15 flex-1 text-sm">
@@ -38,18 +42,19 @@ function App() {
 			<Header onLogout={handleLogout} name={user} />
 			<div className="grid grid-cols-1 landscape:grid-cols-10 gap-4 p-4 landscape:items-start">
 				<SeatOrderCard className="landscape:col-span-6 shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" onSeatBooked={handleSeatBooked} />
-					<div className="landscape:col-span-4 space-y-4">
-						<StatisticCard className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" />
-						{seatBooking && (
-							<CurrentSeatCard 
-								className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]"
-								groupSize={seatBooking.groupSize} 
-								seatId={seatBooking.seatId} 
-								time={seatBooking.time} 
-								type={seatBooking.location}
-							/>
-						)}
-					</div>
+				<div className="landscape:col-span-4 space-y-4">
+					<StatisticCard className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" />
+					{seatBooking && (
+						<CurrentSeatCard 
+							className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]"
+							groupSize={seatBooking.groupSize} 
+							seatId={seatBooking.seatId} 
+							time={seatBooking.time} 
+							type={seatBooking.location}
+							onEndSession={handleEndSession}
+						/>
+					)}
+				</div>
 				</div>
 					</div>
 				)}
