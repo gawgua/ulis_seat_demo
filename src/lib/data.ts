@@ -1,5 +1,13 @@
 import { Hamburger, Landmark, LibraryBig } from "lucide-react";
 
+export const LOCATION_NAMES: Record<string, string> = {
+	library: "Thư viện",
+	canteen: "Căng tin B2",
+	homies_b2: "Homies B2",
+	homies_c3: "Homies C3",
+	homies_multi: "Homies Đa năng",
+};
+
 export const SLOT_CONFIG = {
 	library: {
 		slots: [

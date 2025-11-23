@@ -25,7 +25,8 @@ import { toast } from "sonner";
 
 export default function SeatOrderCard({
 	className,
-}: React.ComponentProps<"div">) {
+	onSeatBooked,
+}: React.ComponentProps<"div"> & { onSeatBooked?: () => void }) {
 	const [type, setType] = useState("library");
 	const [groupSize, setGroupSize] = useState([2]);
 	const [selectedTime, setSelectedTime] = useState("");
@@ -52,6 +53,7 @@ export default function SeatOrderCard({
 			groupSize: tableType === "group" ? groupSize[0] : 1,
 			time: selectedTime,
 		}));
+		onSeatBooked?.();
 	};
 
 	const handleDialogTrigger = (e: React.MouseEvent) => {
