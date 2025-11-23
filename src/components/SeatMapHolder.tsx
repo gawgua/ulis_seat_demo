@@ -1,6 +1,7 @@
 import { SEAT_LEGEND } from "@/lib/data";
 import { Card, CardContent } from "./ui/card";
 import { SeatMap, type SeatMapProps } from "./SeatMap";
+import { Info } from "lucide-react";
 
 export default function SeatMapHolder({ seats, onSeatSelect }: SeatMapProps) {
 	return (
@@ -19,6 +20,10 @@ export default function SeatMapHolder({ seats, onSeatSelect }: SeatMapProps) {
 					</div>
 				))}
 			</div>
+			<p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+				<Info className="w-3 h-3" />
+				Nếu chỗ ngồi bị làm mờ, bàn đó không phù hợp với số người bạn đang chọn
+			</p>
 			<Card className="bg-gray-100 shadow-none border-none flex-1">
 				<CardContent>
 					<SeatMap

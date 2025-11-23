@@ -11,6 +11,7 @@ interface SeatItem {
 	width?: number;
 	height?: number;
 	capacity?: number;
+	disabled?: boolean;
 }
 
 export interface SeatMapProps {
@@ -27,8 +28,8 @@ export function SeatMap({ seats, onSeatSelect }: SeatMapProps) {
 		onSeatSelect("");
 	}, [seats, onSeatSelect]);
 
-	const handleSeatClick = (seatId: string, status: string) => {
-		if (status === "occupied") return;
+	const handleSeatClick = (seatId: string, status: string, disabled?: boolean) => {
+		if (status === "occupied" || disabled) return;
 
 		if (selectedSeat === seatId) {
 			setSelectedSeat(null);
@@ -52,21 +53,23 @@ export function SeatMap({ seats, onSeatSelect }: SeatMapProps) {
 					height: `${maxY * SCALE}px`,
 				}}
 			>
-				{seats.map((seat) => (
-					<button
-						key={seat.id}
-						onClick={() => handleSeatClick(seat.id, seat.status)}
-						disabled={seat.status === "occupied"}
-						className={cn(
-							"absolute rounded flex items-center justify-center font-bold text-sm",
-							"hover:shadow-lg",
-							seat.status === "available"
-								? selectedSeat === seat.id
-									? "bg-blue-500 text-white border-2 border-blue-600 cursor-pointer"
-									: "bg-white text-black border-2 border-gray-400 hover:border-blue-500 cursor-pointer"
-								: seat.status === "occupied"
-								? "bg-gray-400 text-gray-600 border-2 border-gray-500 cursor-not-allowed opacity-60"
-								: "bg-blue-500 text-white border-2 border-blue-600"
+			{seats.map((seat) => (
+				<button
+					key={seat.id}
+					onClick={() => handleSeatClick(seat.id, seat.status, seat.disabled)}
+					disabled={seat.status === "occupied" || seat.disabled}
+					className={cn(
+						"absolute rounded flex items-center justify-center font-bold text-sm",
+						!seat.disabled && "hover:shadow-lg",
+						seat.disabled
+							? "bg-gray-200 text-gray-400 border-2 border-gray-300 cursor-not-allowed opacity-50"
+							: seat.status === "available"
+							? selectedSeat === seat.id
+								? "bg-blue-500 text-white border-2 border-blue-600 cursor-pointer"
+								: "bg-white text-black border-2 border-gray-400 hover:border-blue-500 cursor-pointer"
+							: seat.status === "occupied"
+							? "bg-gray-400 text-gray-600 border-2 border-gray-500 cursor-not-allowed opacity-60"
+							: "bg-blue-500 text-white border-2 border-blue-600"
 						)}
 						style={{
 							left: `${seat.x * SCALE}px`,

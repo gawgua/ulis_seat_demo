@@ -13,7 +13,7 @@ import {
 	RadioGroupCardItem,
 } from "./ui/radio-group-card";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "./ui/tabs";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import TimeChoose from "./TimeChoose";
 import { LOCATIONS, SEAT_MAP, SLOT_CONFIG } from "@/lib/data";
 import { Slider } from "./ui/slider";
@@ -37,6 +37,35 @@ export default function SeatOrderCard({
 		setType(value);
 		setId("");
 	}
+
+	const handleTableTypeChange = (value: string) => {
+		setTableType(value);
+		setId("");
+	}
+
+	const handleGroupSizeChange = (value: number[]) => {
+		setGroupSize(value);
+		setId("");
+	}
+
+	// Filter seats based on table type and group size
+	const filteredSeats = useMemo(() => {
+		const allSeats = SEAT_MAP[type as keyof typeof SEAT_MAP];
+		
+		if (tableType === "personal") {
+			// Mark seats with capacity !== 1 as disabled for personal mode
+			return allSeats.map(seat => ({
+				...seat,
+				disabled: seat.capacity !== 1
+			}));
+		} else {
+			// For group mode, mark seats with capacity < group size as disabled
+			return allSeats.map(seat => ({
+				...seat,
+				disabled: !seat.capacity || seat.capacity < groupSize[0]
+			}));
+		}
+	}, [type, tableType, groupSize]);
 
 	const handleConfirmation = () => {
 		toast.success("Đặt chỗ thành công!", {
@@ -116,7 +145,7 @@ export default function SeatOrderCard({
 						<p>Loại bàn</p>
 						<Tabs
 							defaultValue="personal"
-							onValueChange={setTableType}
+							onValueChange={handleTableTypeChange}
 						>
 							<TabsList>
 								<TabsTrigger
@@ -137,16 +166,16 @@ export default function SeatOrderCard({
 								<p>Chọn bàn cá nhân</p>
 							</TabsContent>
 							<TabsContent value="group">
-								<p>Chọn bàn nhóm</p>
-								<div className="flex items-center gap-4">
-									<Slider
-										min={2}
-										max={8}
-										step={1}
-										value={groupSize}
-										onValueChange={setGroupSize}
-										className="flex-1"
-									/>
+							<p>Chọn bàn nhóm</p>
+							<div className="flex items-center gap-4">
+								<Slider
+									min={2}
+									max={8}
+									step={1}
+									value={groupSize}
+									onValueChange={handleGroupSizeChange}
+									className="flex-1"
+								/>
 									<span className="text-sm font-medium w-8 text-center">
 										{groupSize[0]}
 									</span>
@@ -165,7 +194,7 @@ export default function SeatOrderCard({
 				</div>
 				<div className="landscape:h-full">
 					<SeatMapHolder
-						seats={SEAT_MAP[type as keyof typeof SEAT_MAP]}
+						seats={filteredSeats}
 						onSeatSelect={setId}
 					/>
 				</div>
