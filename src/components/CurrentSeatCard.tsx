@@ -45,14 +45,29 @@ export default function CurrentSeatCard({
 						<p>
 							<strong>Địa điểm:</strong> {LOCATION_NAMES[type] || type}
 						</p>
-						<p>
-							<strong>Bàn số:</strong> {seatId.split('-')[0]}
-						</p>
-						{seatId.includes('-') && (
-							<p>
-								<strong>Ghế số:</strong> {seatId.split('-')[1]}
-							</p>
-						)}
+						{(() => {
+							const seats = seatId.split(', ');
+							const hasMultipleSeats = seats.length > 1;
+							const firstSeat = seats[0];
+							const tableNumber = firstSeat.includes('-') ? firstSeat.split('-')[0] : firstSeat;
+							
+							return (
+								<>
+									<p>
+										<strong>Bàn số:</strong> {tableNumber}
+									</p>
+									{hasMultipleSeats ? (
+										<p>
+											<strong>Ghế số:</strong> {seats.map(s => s.includes('-') ? s.split('-')[1] : s).sort().join(', ')}
+										</p>
+									) : firstSeat.includes('-') && (
+										<p>
+											<strong>Ghế số:</strong> {firstSeat.split('-')[1]}
+										</p>
+									)}
+								</>
+							);
+						})()}
 						<p>
 							<strong>Số người:</strong> {groupSize}
 						</p>

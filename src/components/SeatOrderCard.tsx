@@ -31,21 +31,21 @@ export default function SeatOrderCard({
 	const [groupSize, setGroupSize] = useState([2]);
 	const [selectedTime, setSelectedTime] = useState("");
 	const [tableType, setTableType] = useState("personal");
-	const [id, setId] = useState("");
+	const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
 
 	const handleTypeChange = (value: string) => {
 		setType(value);
-		setId("");
+		setSelectedSeats([]);
 	}
 
 	const handleTableTypeChange = (value: string) => {
 		setTableType(value);
-		setId("");
+		setSelectedSeats([]);
 	}
 
 	const handleGroupSizeChange = (value: number[]) => {
 		setGroupSize(value);
-		setId("");
+		setSelectedSeats([]);
 	}
 
 	// Filter seats based on table type and group size
@@ -53,11 +53,14 @@ export default function SeatOrderCard({
 		const allSeats = SEAT_MAP[type as keyof typeof SEAT_MAP];
 		
 		if (tableType === "personal") {
-			// Mark seats with capacity !== 1 as disabled for personal mode
-			return allSeats.map(seat => ({
-				...seat,
-				disabled: seat.capacity !== 1
-			}));
+			// For personal mode, disable if remaining available seats < 1
+			return allSeats.map(seat => {
+				const remainingSeats = (seat.capacity || 0) - seat.occupiedSeats.length;
+				return {
+					...seat,
+					disabled: remainingSeats < 1
+				};
+			});
 		} else {
 			// For group mode, disable if remaining available seats < group size
 			return allSeats.map(seat => {
@@ -81,7 +84,7 @@ export default function SeatOrderCard({
 		});
 		localStorage.setItem("seatBooking", JSON.stringify({
 			location: type,
-			seatId: id,
+			seatId: selectedSeats.join(', '),
 			tableType: tableType,
 			groupSize: tableType === "group" ? groupSize[0] : 1,
 			time: selectedTime,
@@ -90,9 +93,19 @@ export default function SeatOrderCard({
 	};
 
 	const handleDialogTrigger = (e: React.MouseEvent) => {
-		if (!selectedTime || !id) {
+		const requiredSeats = tableType === "group" ? groupSize[0] : 1;
+		if (!selectedTime || selectedSeats.length === 0) {
 			e.preventDefault();
 			toast.warning("Chưa chọn thời gian hoặc chỗ ngồi!", {
+				style: {
+					background: '#fef3c7',
+					color: '#92400e',
+					border: '1px solid #fcd34d'
+				}
+			});
+		} else if (tableType === "group" && selectedSeats.length !== requiredSeats) {
+			e.preventDefault();
+			toast.warning(`Vui lòng chọn đủ ${requiredSeats} ghế!`, {
 				style: {
 					background: '#fef3c7',
 					color: '#92400e',
@@ -199,7 +212,10 @@ export default function SeatOrderCard({
 				<div className="landscape:h-full">
 					<SeatMapHolder
 						seats={filteredSeats}
-						onSeatSelect={setId}
+						selectedSeats={selectedSeats}
+						onSeatsChange={setSelectedSeats}
+						maxSeats={tableType === "group" ? groupSize[0] : 1}
+						tableType={tableType}
 					/>
 				</div>
 				<div className="landscape:col-span-2 flex justify-end mt-4">
@@ -229,7 +245,7 @@ export default function SeatOrderCard({
 										<span className="font-medium">
 											Số:
 										</span>{" "}
-										{id || "Chưa chọn"}
+										{selectedSeats.join(', ') || "Chưa chọn"}
 									</p>
 									<p>
 										<span className="font-medium">

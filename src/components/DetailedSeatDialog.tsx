@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
 import {
 	Dialog,
 	DialogContent,
 	DialogHeader,
 	DialogTitle,
+	DialogClose,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import type { SeatPositionType } from "@/lib/data";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface DetailedSeat {
 	id: string;
@@ -23,7 +25,10 @@ interface DetailedSeatDialogProps {
 	tableId: string;
 	capacity: number;
 	occupiedSeats: SeatPositionType[];
-	onSeatSelect?: (seatId: string) => void;
+	selectedSeats: string[];
+	onSeatsChange: (seatIds: string[]) => void;
+	maxSeats: number;
+	tableType: string;
 }
 
 export function DetailedSeatDialog({
@@ -32,9 +37,11 @@ export function DetailedSeatDialog({
 	tableId,
 	capacity,
 	occupiedSeats,
-	onSeatSelect,
+	selectedSeats,
+	onSeatsChange,
+	maxSeats,
+	tableType,
 }: DetailedSeatDialogProps) {
-	const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
 
 	// Generate seats based on capacity
 	const generateSeats = (): DetailedSeat[] => {
@@ -89,12 +96,38 @@ export function DetailedSeatDialog({
 	const handleSeatClick = (seatId: string, occupied: boolean) => {
 		if (occupied) return;
 
-		if (selectedSeat === seatId) {
-			setSelectedSeat(null);
-			onSeatSelect?.("");
+		// Check if switching to a different table
+		const isFromDifferentTable = selectedSeats.length > 0 && 
+			selectedSeats.some(id => {
+				const existingTable = id.includes('-') ? id.split('-')[0] : id;
+				const currentTable = tableId;
+				return existingTable !== currentTable;
+			});
+
+		if (tableType === "personal") {
+			// Personal mode: single selection
+			if (selectedSeats.includes(seatId)) {
+				onSeatsChange([]);
+			} else {
+				// If from different table, clear and select new
+				if (isFromDifferentTable) {
+					onSeatsChange([seatId]);
+				} else {
+					onSeatsChange([seatId]);
+				}
+			}
 		} else {
-			setSelectedSeat(seatId);
-			onSeatSelect?.(seatId);
+			// Group mode: multiple selections up to maxSeats
+			// If from different table, start fresh
+			if (isFromDifferentTable) {
+				onSeatsChange([seatId]);
+			} else {
+				if (selectedSeats.includes(seatId)) {
+					onSeatsChange(selectedSeats.filter(id => id !== seatId));
+				} else if (selectedSeats.length < maxSeats) {
+					onSeatsChange([...selectedSeats, seatId]);
+				}
+			}
 		}
 	};
 
@@ -121,7 +154,7 @@ export function DetailedSeatDialog({
 									"absolute rounded-lg flex items-center justify-center font-bold text-sm transition-all",
 									"hover:shadow-lg",
 									!seat.occupied
-										? selectedSeat === seat.id
+										? selectedSeats.includes(seat.id)
 											? "bg-blue-500 text-white border-2 border-blue-600 cursor-pointer"
 											: "bg-white text-black border-2 border-gray-400 hover:border-blue-500 cursor-pointer"
 										: "bg-gray-400 text-gray-600 border-2 border-gray-500 cursor-not-allowed opacity-60"
@@ -155,6 +188,28 @@ export function DetailedSeatDialog({
 							<div className="w-4 h-4 bg-gray-400 border-2 border-gray-500 rounded"></div>
 							<span>Đã có người</span>
 						</div>
+					</div>
+					<div className="flex gap-2 justify-end mt-4">
+						<DialogClose asChild>
+							<Button variant="outline">Hủy</Button>
+						</DialogClose>
+						<Button 
+							onClick={() => {
+								if (tableType === "group" && selectedSeats.length !== maxSeats) {
+									toast.warning(`Vui lòng chọn đủ ${maxSeats} ghế!`, {
+										style: {
+											background: '#fef3c7',
+											color: '#92400e',
+											border: '1px solid #fcd34d'
+										}
+									});
+								} else if (selectedSeats.length > 0) {
+									onOpenChange(false);
+								}
+							}}
+						>
+							Xác nhận
+						</Button>
 					</div>
 				</div>
 			</DialogContent>

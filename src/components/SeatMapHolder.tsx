@@ -1,9 +1,10 @@
 import { SEAT_LEGEND } from "@/lib/data";
 import { Card, CardContent } from "./ui/card";
-import { SeatMap, type SeatMapProps } from "./SeatMap";
+import { SeatMap } from "./SeatMap";
 import { Info } from "lucide-react";
+import type { SeatMapProps } from "./SeatMap";
 
-export default function SeatMapHolder({ seats, onSeatSelect }: SeatMapProps) {
+export default function SeatMapHolder({ seats, selectedSeats, onSeatsChange, maxSeats, tableType }: SeatMapProps) {
 	return (
 		<div className="h-full flex flex-col">
 			<p className="mb-2">Sơ đồ chỗ ngồi</p>
@@ -28,7 +29,10 @@ export default function SeatMapHolder({ seats, onSeatSelect }: SeatMapProps) {
 				<CardContent>
 					<SeatMap
 						seats={seats}
-						onSeatSelect={onSeatSelect}
+						selectedSeats={selectedSeats}
+						onSeatsChange={onSeatsChange}
+						maxSeats={maxSeats}
+						tableType={tableType}
 					/>
 				</CardContent>
 			</Card>

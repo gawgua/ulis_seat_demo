@@ -18,21 +18,20 @@ interface SeatItem {
 
 export interface SeatMapProps {
 	seats: SeatItem[];
-	onSeatSelect: (seatId: string) => void;
+	selectedSeats: string[];
+	onSeatsChange: (seats: string[]) => void;
+	maxSeats: number;
+	tableType: string;
 }
 
-export function SeatMap({ seats, onSeatSelect }: SeatMapProps) {
-	const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
-	const [selectedDetailedSeat, setSelectedDetailedSeat] = useState<string | null>(null);
+export function SeatMap({ seats, selectedSeats, onSeatsChange, maxSeats, tableType }: SeatMapProps) {
 	const [dialogOpen, setDialogOpen] = useState(false);
 	const [selectedTable, setSelectedTable] = useState<{ id: string; capacity: number; occupiedSeats: SeatPositionType[] } | null>(null);
 	const SCALE = 35; // Each seat block is 40x40 pixels
 
 	useEffect(() => {
-		setSelectedSeat(null);
-		setSelectedDetailedSeat(null);
-		onSeatSelect("");
-	}, [seats, onSeatSelect]);
+		onSeatsChange([]);
+	}, [seats]);
 
 	const handleSeatClick = (seat: SeatItem) => {
 		if (seat.disabled) return;
@@ -46,21 +45,43 @@ export function SeatMap({ seats, onSeatSelect }: SeatMapProps) {
 			});
 			setDialogOpen(true);
 		} else {
-			// For capacity = 1, select directly
-			if (selectedSeat === seat.id) {
-				setSelectedSeat(null);
-				onSeatSelect("");
+			// For capacity = 1, handle based on mode
+			if (tableType === "personal") {
+				// Personal mode: single selection
+				if (selectedSeats.includes(seat.id)) {
+					onSeatsChange([]);
+				} else {
+					onSeatsChange([seat.id]);
+				}
 			} else {
-				setSelectedSeat(seat.id);
-				onSeatSelect(seat.id);
+				// Group mode: check if selecting from different table
+				if (selectedSeats.length > 0) {
+					const firstSeatTable = selectedSeats[0].includes('-') ? selectedSeats[0].split('-')[0] : selectedSeats[0];
+					const currentTable = seat.id;
+					
+					// If selecting from different table, clear previous and start new selection
+					if (firstSeatTable !== currentTable && !selectedSeats.includes(seat.id)) {
+						onSeatsChange([seat.id]);
+						return;
+					}
+				}
+				
+				// Multiple selections up to maxSeats
+				if (selectedSeats.includes(seat.id)) {
+					onSeatsChange(selectedSeats.filter(id => id !== seat.id));
+				} else if (selectedSeats.length < maxSeats) {
+					onSeatsChange([...selectedSeats, seat.id]);
+				}
 			}
 		}
 	};
 
-	const handleDetailedSeatSelect = (seatId: string) => {
-		setSelectedDetailedSeat(seatId);
-		onSeatSelect(seatId);
-		if (seatId) {
+	const handleDetailedSeatSelect = (seatIds: string[]) => {
+		onSeatsChange(seatIds);
+		// Only close dialog if correct number of seats selected in group mode
+		if (tableType === "personal" && seatIds.length > 0) {
+			setDialogOpen(false);
+		} else if (tableType === "group" && seatIds.length === maxSeats) {
 			setDialogOpen(false);
 		}
 	};
@@ -79,8 +100,8 @@ export function SeatMap({ seats, onSeatSelect }: SeatMapProps) {
 				}}
 			>
 			{seats.map((seat) => {
-				const isTableSelected = selectedDetailedSeat?.startsWith(`${seat.id}-`);
-				const isSingleSeatSelected = selectedSeat === seat.id;
+				const isTableSelected = selectedSeats.some(id => id.startsWith(`${seat.id}-`));
+				const isSingleSeatSelected = selectedSeats.includes(seat.id);
 				const isFullyOccupied = seat.capacity === seat.occupiedSeats.length;
 				return (
 				<button
@@ -121,7 +142,10 @@ export function SeatMap({ seats, onSeatSelect }: SeatMapProps) {
 					tableId={selectedTable.id}
 					capacity={selectedTable.capacity}
 					occupiedSeats={selectedTable.occupiedSeats}
-					onSeatSelect={handleDetailedSeatSelect}
+					selectedSeats={selectedSeats}
+					onSeatsChange={handleDetailedSeatSelect}
+					maxSeats={maxSeats}
+					tableType={tableType}
 				/>
 			)}
 		</div>
