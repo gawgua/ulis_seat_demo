@@ -36,16 +36,16 @@ export default function PersonalInfo({
 
 	return (
 		<div className="flex flex-col gap-6 h-[600px] w-full min-w-[320px] mx-auto relative pb-16 overflow-hidden">
-			<div className="flex flex-col md:flex-row gap-6 h-full overflow-y-auto">
-				<div className="w-full md:w-48 flex flex-col gap-4">
-					<div className="flex flex-col items-center gap-2">
-						<Avatar className="w-20 h-20">
+			<div className="flex flex-col md:flex-row gap-6 h-full overflow-y-auto overflow-x-hidden">
+				<div className="w-full md:w-48 flex flex-col gap-4 shrink-0">
+					<div className="flex flex-col items-center gap-2 overflow-hidden">
+						<Avatar className="w-20 h-20 shrink-0">
 							<AvatarImage src="" />
 							<AvatarFallback className="bg-linear-to-b from-blue-600 to-blue-300 text-white text-2xl">
 								UL
 							</AvatarFallback>
 						</Avatar>
-						<p className="font-semibold text-center">{name}</p>
+						<p className="font-semibold text-center wrap-break-word w-full px-2">{name}</p>
 					</div>
 					<div className="flex flex-col gap-1">
 						{categories.map((category) => (
@@ -56,7 +56,7 @@ export default function PersonalInfo({
 										? "default"
 										: "ghost"
 								}
-								className="justify-start"
+								className="justify-start portrait:mr-8"
 								onClick={() => setActiveCategory(category.id)}
 							>
 								{category.label}
@@ -65,7 +65,7 @@ export default function PersonalInfo({
 					</div>
 				</div>
 
-				<div className="flex-1 min-w-0 md:mt-32">
+				<div className="flex-1 min-w-0 md:mt-32 portrait:mr-8">
 					{activeCategory === "info" && (
 						<Card>
 							<CardHeader>
@@ -187,7 +187,7 @@ export default function PersonalInfo({
 			<div className="absolute bottom-0 right-0">
 				<Button
 					variant="outline"
-					className="border-red-500 text-red-500 hover:bg-red-50"
+					className="border-red-500 text-red-500 hover:bg-red-50 portrait:mr-8"
 					onClick={handleLogout}
 				>
 					Đăng xuất
