@@ -7,9 +7,9 @@ import { MOCK_TOP_SEAT } from "@/lib/data";
 export default function StatisticCard({
 	className,
 }: React.ComponentProps<"div">) {
-	const [libraryUsage, _setLibraryUsage] = useState(70);
-	const [canteenUsage, _setCanteenUsage] = useState(50);
-	const [homiesUsage, _setHomiesUsage] = useState(30);
+	const [libraryUsage, _setLibraryUsage] = useState(50);
+	const [canteenUsage, _setCanteenUsage] = useState(30);
+	const [homiesUsage, _setHomiesUsage] = useState(70);
 
 	const formatTime = (seconds: number) => {
 		const hours = Math.floor(seconds / 3600);

@@ -59,11 +59,15 @@ export default function SeatOrderCard({
 				disabled: seat.capacity !== 1
 			}));
 		} else {
-			// For group mode, mark seats with capacity < group size as disabled
-			return allSeats.map(seat => ({
-				...seat,
-				disabled: !seat.capacity || seat.capacity < groupSize[0]
-			}));
+			// For group mode, disable if remaining available seats < group size
+			return allSeats.map(seat => {
+				const remainingSeats = (seat.capacity || 0) - seat.occupiedSeats.length;
+				const notEnoughRemainingSeats = remainingSeats < groupSize[0];
+				return {
+					...seat,
+					disabled: notEnoughRemainingSeats
+				};
+			});
 		}
 	}, [type, tableType, groupSize]);
 

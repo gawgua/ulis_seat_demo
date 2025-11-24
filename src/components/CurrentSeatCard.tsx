@@ -39,22 +39,31 @@ export default function CurrentSeatCard({
 		</CardHeader>
 		<Separator />
 		<CardContent>
-			<div className="space-y-2">
-				<p className="text-lg">
-					<strong>Chỗ ngồi:</strong> {seatId || "Chưa có chỗ ngồi"}
-				</p>
-				{seatId && (
+			<div className="space-y-2 text-[16px]">
+				{seatId ? (
 					<>
-						<p className="text-lg">
+						<p>
 							<strong>Địa điểm:</strong> {LOCATION_NAMES[type] || type}
 						</p>
-						<p className="text-lg">
+						<p>
+							<strong>Bàn số:</strong> {seatId.split('-')[0]}
+						</p>
+						{seatId.includes('-') && (
+							<p>
+								<strong>Ghế số:</strong> {seatId.split('-')[1]}
+							</p>
+						)}
+						<p>
 							<strong>Số người:</strong> {groupSize}
 						</p>
-						<p className="text-lg">
+						<p>
 							<strong>Thời gian đặt chỗ:</strong> {time}
 						</p>
 					</>
+				) : (
+					<p>
+						<strong>Chỗ ngồi:</strong> Chưa có chỗ ngồi
+					</p>
 				)}
 			</div>
 			{seatId && (
