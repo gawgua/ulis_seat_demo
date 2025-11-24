@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import SeatOrderCard from "./components/SeatOrderCard";
 import StatisticCard from "./components/StatisticCard";
@@ -13,6 +13,18 @@ function App() {
 		const saved = localStorage.getItem("seatBooking");
 		return saved ? JSON.parse(saved) : null;
 	});
+	const [isWideScreen, setIsWideScreen] = useState(false);
+
+	useEffect(() => {
+		const checkAspectRatio = () => {
+			const aspectRatio = window.innerWidth / window.innerHeight;
+			setIsWideScreen(aspectRatio >= 1.5);
+		};
+
+		checkAspectRatio();
+		window.addEventListener("resize", checkAspectRatio);
+		return () => window.removeEventListener("resize", checkAspectRatio);
+	}, []);
 	
 	const handleLogout = () => {
 		setUser("");
@@ -40,9 +52,9 @@ function App() {
 				{user !== "" && (
 					<div>
 			<Header onLogout={handleLogout} name={user} />
-			<div className="grid grid-cols-1 landscape:grid-cols-10 gap-4 p-4 landscape:items-start">
-				<SeatOrderCard className="landscape:col-span-6 shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" onSeatBooked={handleSeatBooked} />
-				<div className="landscape:col-span-4 space-y-4">
+			<div className={`grid grid-cols-1 gap-4 p-4 ${isWideScreen ? 'grid-cols-10 items-start' : ''}`}>
+				<SeatOrderCard className={`shadow-[6px_6px_10px_rgba(0,0,0,0.2)] ${isWideScreen ? 'col-span-6' : ''}`} onSeatBooked={handleSeatBooked} />
+				<div className={`space-y-4 ${isWideScreen ? 'col-span-4' : ''}`}>
 					<StatisticCard className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" />
 					{seatBooking && (
 						<CurrentSeatCard 
