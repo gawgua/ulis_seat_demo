@@ -175,7 +175,7 @@ export function DetailedSeatDialog({
 							</button>
 						))}
 					</div>
-					<div className="flex gap-4 text-xs text-gray-600">
+					<div className="flex gap-4 text-xs text-gray-600 dark:text-[#a0a0a0]">
 						<div className="flex items-center gap-2">
 							<div className="w-4 h-4 bg-white border-2 border-gray-400 rounded"></div>
 							<span>Còn trống</span>

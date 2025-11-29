@@ -6,6 +6,7 @@ import LoginForm from "./components/LoginForm";
 import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
 import Report from "./components/Report";
 import CurrentSeatCard from "./components/CurrentSeatCard";
+import LandingPage from "./components/LandingPage";
 
 function App() {
 	const [user, setUser] = useState(localStorage.getItem("user") || "");
@@ -14,6 +15,7 @@ function App() {
 		return saved ? JSON.parse(saved) : null;
 	});
 	const [isWideScreen, setIsWideScreen] = useState(false);
+	const [showLanding, setShowLanding] = useState(true);
 
 	useEffect(() => {
 		const checkAspectRatio = () => {
@@ -25,11 +27,11 @@ function App() {
 		window.addEventListener("resize", checkAspectRatio);
 		return () => window.removeEventListener("resize", checkAspectRatio);
 	}, []);
-	
+
 	const handleLogout = () => {
 		setUser("");
 	};
-	
+
 	const handleSeatBooked = () => {
 		const saved = localStorage.getItem("seatBooking");
 		if (saved) {
@@ -44,30 +46,57 @@ function App() {
 	return (
 		<div className="flex flex-col min-h-screen">
 			<main className="pt-15 flex-1 text-sm">
-				{user === "" && (
-					<div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
-						<LoginForm onLogin={setUser} />
+				<Header
+					onLogout={handleLogout}
+					name={user}
+					hideProfile={user === ""}
+					onLogoClick={() => setShowLanding(true)}
+				/>
+				{showLanding && (
+					<div>
+						<LandingPage
+							onGetStarted={() => setShowLanding(false)}
+						/>
 					</div>
 				)}
-				{user !== "" && (
+				{!showLanding && user === "" && (
 					<div>
-			<Header onLogout={handleLogout} name={user} />
-			<div className={`grid grid-cols-1 gap-4 p-4 ${isWideScreen ? 'grid-cols-10 items-start' : ''}`}>
-				<SeatOrderCard className={`shadow-[6px_6px_10px_rgba(0,0,0,0.2)] ${isWideScreen ? 'col-span-6' : ''}`} onSeatBooked={handleSeatBooked} />
-				<div className={`space-y-4 ${isWideScreen ? 'col-span-4' : ''}`}>
-					<StatisticCard className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" />
-					{seatBooking && (
-						<CurrentSeatCard 
-							className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]"
-							groupSize={seatBooking.groupSize} 
-							seatId={seatBooking.seatId} 
-							time={seatBooking.time} 
-							type={seatBooking.location}
-							onEndSession={handleEndSession}
-						/>
-					)}
-				</div>
-				</div>
+						<div className="flex items-center justify-center min-h-[calc(100vh-4rem)] p-4">
+							<LoginForm onLogin={setUser} />
+						</div>
+					</div>
+				)}
+				{!showLanding && user !== "" && (
+					<div>
+						<div
+							className={`grid grid-cols-1 gap-4 p-4 ${
+								isWideScreen ? "grid-cols-10 items-start" : ""
+							}`}
+						>
+							<SeatOrderCard
+								className={`shadow-[6px_6px_10px_rgba(0,0,0,0.2)] ${
+									isWideScreen ? "col-span-6" : ""
+								}`}
+								onSeatBooked={handleSeatBooked}
+							/>
+							<div
+								className={`space-y-4 ${
+									isWideScreen ? "col-span-4" : ""
+								}`}
+							>
+								<StatisticCard className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]" />
+								{seatBooking && (
+									<CurrentSeatCard
+										className="shadow-[6px_6px_10px_rgba(0,0,0,0.2)]"
+										groupSize={seatBooking.groupSize}
+										seatId={seatBooking.seatId}
+										time={seatBooking.time}
+										type={seatBooking.location}
+										onEndSession={handleEndSession}
+									/>
+								)}
+							</div>
+						</div>
 					</div>
 				)}
 			</main>

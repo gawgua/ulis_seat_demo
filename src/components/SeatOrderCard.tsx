@@ -15,10 +15,10 @@ import {
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "./ui/tabs";
 import { useMemo, useState } from "react";
 import TimeChoose from "./TimeChoose";
-import { LOCATIONS, SEAT_MAP, SLOT_CONFIG } from "@/lib/data";
+import { LOCATIONS, SEAT_MAP, SeatPosition, SLOT_CONFIG } from "@/lib/data";
 import { Slider } from "./ui/slider";
 import SeatMapHolder from "./SeatMapHolder";
-import { Info, UserRound, UsersRound } from "lucide-react";
+import { Info, UserRound, UsersRound, Wand } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "./ui/dialog";
 import { toast } from "sonner";
@@ -52,28 +52,15 @@ export default function SeatOrderCard({
 	const filteredSeats = useMemo(() => {
 		const allSeats = SEAT_MAP[type as keyof typeof SEAT_MAP];
 
-		if (tableType === "personal") {
-			// For personal mode, disable if remaining available seats < 1
-			return allSeats.map((seat) => {
-				const remainingSeats =
-					(seat.capacity || 0) - seat.occupiedSeats.length;
-				return {
-					...seat,
-					disabled: remainingSeats < 1,
-				};
-			});
-		} else {
-			// For group mode, disable if remaining available seats < group size
-			return allSeats.map((seat) => {
-				const remainingSeats =
-					(seat.capacity || 0) - seat.occupiedSeats.length;
-				const notEnoughRemainingSeats = remainingSeats < groupSize[0];
-				return {
-					...seat,
-					disabled: notEnoughRemainingSeats,
-				};
-			});
-		}
+		return allSeats.map((seat) => {
+			const neededSeats = tableType === "group" ? groupSize[0] : 1;
+			const remainingSeats =
+				(seat.capacity || 0) - seat.occupiedSeats.length;
+			return {
+				...seat,
+				disabled: remainingSeats < neededSeats,
+			};
+		});
 	}, [type, tableType, groupSize]);
 
 	const handleConfirmation = () => {
@@ -95,6 +82,65 @@ export default function SeatOrderCard({
 			})
 		);
 		onSeatBooked?.();
+	};
+
+	const handleAutoSelect = (e: React.MouseEvent) => {
+		if (!selectedTime) {
+			e.preventDefault();
+			toast.warning("Vui lòng chọn thời gian trước!", {
+				style: {
+					background: "#fef3c7",
+					color: "#92400e",
+					border: "1px solid #fcd34d",
+				},
+			});
+			return;
+		}
+
+		const requiredSeats = tableType === "group" ? groupSize[0] : 1;
+
+		// Get all possible seat positions
+		const allSeatPositions = Object.values(SeatPosition);
+
+		// Find a table that has enough consecutive available seats
+		for (const seat of filteredSeats) {
+			if (seat.disabled) continue;
+
+			const availableSeats = allSeatPositions.filter(
+				(s) => !seat.occupiedSeats.includes(s)
+			);
+
+			if (availableSeats.length >= requiredSeats) {
+				// Select the required number of seats from this table
+				const selectedFromTable = availableSeats.slice(
+					0,
+					requiredSeats
+				);
+				setSelectedSeats(selectedFromTable);
+
+				toast.success(
+					`Đã tự động chọn ${requiredSeats} chỗ tại bàn ${seat.id}!`,
+					{
+						style: {
+							background: "#d1fae5",
+							color: "#065f46",
+							border: "1px solid #6ee7b7",
+						},
+					}
+				);
+				return;
+			}
+		}
+
+		// If no suitable table found
+		e.preventDefault();
+		toast.error("Không tìm thấy bàn phù hợp!", {
+			style: {
+				background: "#fee2e2",
+				color: "#991b1b",
+				border: "1px solid #fca5a5",
+			},
+		});
 	};
 
 	const handleDialogTrigger = (e: React.MouseEvent) => {
@@ -209,7 +255,8 @@ export default function SeatOrderCard({
 						<p className="mb-2">Chọn khung giờ</p>
 						<p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
 							<Info className="w-3 h-3" />
-							Homies và Thư viện chỉ hoạt động T2 - T6, Căng tin hoạt động full tuần
+							Homies và Thư viện chỉ hoạt động T2 - T6, Căng tin
+							hoạt động full tuần
 						</p>
 						<TimeChoose
 							timeslot={
@@ -232,8 +279,14 @@ export default function SeatOrderCard({
 						tableType={tableType}
 					/>
 				</div>
-				<div className="landscape:col-span-2 flex justify-end mt-4">
+				<div className="landscape:col-span-2 flex justify-end gap-2 mt-4">
 					<Dialog>
+						<DialogTrigger asChild onClick={handleAutoSelect}>
+							<Button className="bg-blue-400 hover:bg-blue-300 dark:text-white">
+								<Wand />
+								Tự động chọn chỗ
+							</Button>
+						</DialogTrigger>
 						<DialogTrigger asChild onClick={handleDialogTrigger}>
 							<Button>Xác nhận</Button>
 						</DialogTrigger>

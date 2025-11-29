@@ -65,7 +65,17 @@ export const LOCATIONS = [
 	{ id: "homies_multi", name: "Homies Đa năng", icon: Landmark, description: "Tầng 2 nhà Đa năng. Yên tĩnh, chủ yếu là chỗ ngồi cỡ nhỏ (1 người), khá nhiều ổ cắm điện." },
 ];
 
-const HOMIES_C3_SEAT_MAP = [
+type MapData = {
+	id: string;
+	occupiedSeats: SeatPositionType[];
+	x: number;
+	y: number;
+	width?: number;
+	height?: number;
+	capacity: number;
+}
+
+const HOMIES_C3_SEAT_MAP: MapData[] = [
 	// Section A - Left side
 	{ id: "36", occupiedSeats: [SeatPosition.A], x: 0, y: 0, capacity: 1 },
 	{ id: "35", occupiedSeats: [SeatPosition.A], x: 0, y: 1, capacity: 1 },
@@ -105,7 +115,7 @@ const HOMIES_C3_SEAT_MAP = [
 	{ id: "11", occupiedSeats: [SeatPosition.A], x: 9, y: 9, capacity: 1 },
 ];
 
-const HOMIES_B2_SEAT_MAP = [
+const HOMIES_B2_SEAT_MAP: MapData[] = [
 	{ id: "27", occupiedSeats: [], x: 0, y: 0, width: 1.5, capacity: 5 },
 	{ id: "28", occupiedSeats: [SeatPosition.A, SeatPosition.B, SeatPosition.C, SeatPosition.D, SeatPosition.E], x: 1.5, y: 0, width: 1.5, capacity: 5 },
 	{ id: "29", occupiedSeats: [], x: 3, y: 0, width: 1.5, capacity: 5 },
@@ -141,7 +151,7 @@ const HOMIES_B2_SEAT_MAP = [
 	{ id: "1", occupiedSeats: [], x: 6.5, y: 7, width: 1.5, capacity: 5 },
 ];
 
-const CANTEEN_SEAT_MAP = [
+const CANTEEN_SEAT_MAP: MapData[] = [
 	{ id: "1", occupiedSeats: [SeatPosition.A], x: 1.75, y: 6.75, capacity: 1 },
 	{ id: "2", occupiedSeats: [], x: 1.75, y: 5.75, capacity: 1 },
 	{ id: "3", occupiedSeats: [SeatPosition.A, SeatPosition.B, SeatPosition.C, SeatPosition.D, SeatPosition.E], x: 0, y: 6.25, width: 1.5, capacity: 5 },
@@ -163,7 +173,7 @@ const CANTEEN_SEAT_MAP = [
 
 ]
 
-const HOMIES_MULTI_SEAT_MAP = [
+const HOMIES_MULTI_SEAT_MAP: MapData[] = [
 	{ id: "11", occupiedSeats: [], x: 0, y: 0, capacity: 1 },
 	{ id: "10", occupiedSeats: [SeatPosition.A], x: 0, y: 1, capacity: 1 },
 	{ id: "9", occupiedSeats: [], x: 0, y: 2, capacity: 1 },
@@ -180,7 +190,7 @@ const HOMIES_MULTI_SEAT_MAP = [
 	{ id: "14", occupiedSeats: [], x: 5, y: 5, width: 1.5, capacity: 5 },
 ];
 
-const LIBRARY_SEAT_MAP = [
+const LIBRARY_SEAT_MAP: MapData[] = [
 	{ id: "4", occupiedSeats: [], x: 6, y: 0, capacity: 1 },
 	{ id: "5", occupiedSeats: [SeatPosition.A], x: 7, y: 0, capacity: 1 },
 	{ id: "6", occupiedSeats: [], x: 8, y: 0, capacity: 1 },

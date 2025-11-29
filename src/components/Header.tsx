@@ -3,16 +3,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Badge } from "./ui/badge";
 import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
 
-export default function Header({ onLogout, name }: { onLogout: () => void, name: string }) {
+export default function Header({ onLogout, name, hideProfile, onLogoClick }: { onLogout: () => void, name: string, hideProfile: boolean, onLogoClick?: () => void }) {
 	return (
 		<header className="fixed top-0 z-50 w-full backdrop-blur-sm shadow-sm flex flex-row items-center justify-between gap-4 px-4">
-			<div className="hidden lg:flex flex-col">
-				<h1 className="text-2xl font-bold text-white">ULIS Workspace Finder.</h1>
+			<div className="hidden lg:flex flex-col cursor-pointer" onClick={onLogoClick}>
+				<h1 className="text-2xl font-bold dark:text-white">ULIS Workspace Finder.</h1>
 				<p className="text-sm text-gray-600 dark:text-[#a0a0a0]">
 					Lock in your work easier than ever!
 				</p>
 			</div>
-			<img src="./ulis.svg" alt="ULIS Logo" className="h-12 lg:hidden" />
+			<img src="./ulis.svg" alt="ULIS Logo" className="h-12 lg:hidden cursor-pointer" onClick={onLogoClick} />
 			<Badge
 				variant={"outline"}
 				className="bg-blue-50 dark:bg-blue-400 border-blue-700 dark:border-2 hidden lg:flex"
@@ -22,7 +22,8 @@ export default function Header({ onLogout, name }: { onLogout: () => void, name:
 			<p className="text-sm text-gray-600 dark:text-[#a0a0a0] hidden lg:block">
 				Có thể check-in trực tiếp tại chỗ như bình thường
 			</p>
-			<Dialog>
+			{!hideProfile && (
+				<Dialog>
 				<DialogTrigger asChild>
 					<Badge variant={"outline"} className="h-11 cursor-pointer">
 						<Avatar>
@@ -45,6 +46,7 @@ export default function Header({ onLogout, name }: { onLogout: () => void, name:
 					<PersonalInfo onLogout={onLogout} name={name}/>
 				</DialogContent>
 			</Dialog>
+			)}
 		</header>
 	);
 }
