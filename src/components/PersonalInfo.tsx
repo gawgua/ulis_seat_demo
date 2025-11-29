@@ -12,6 +12,8 @@ import { Button } from "./ui/button";
 import { MOCK_HISTORY } from "@/lib/data";
 import { Badge } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Switch } from "./ui/switch";
 
 export default function PersonalInfo({
 	onLogout,
@@ -21,6 +23,7 @@ export default function PersonalInfo({
 	name: string;
 }) {
 	const [activeCategory, setActiveCategory] = useState("info");
+	const { theme, toggleTheme } = useTheme();
 
 	const categories = [
 		{ id: "info", label: "Thông tin cá nhân" },
@@ -175,10 +178,20 @@ export default function PersonalInfo({
 									Tùy chỉnh trải nghiệm của bạn
 								</CardDescription>
 							</CardHeader>
-							<CardContent>
-								<p className="text-sm text-gray-500">
-									Tính năng đang được phát triển
-								</p>
+							<CardContent className="space-y-4">
+								<div className="flex items-center justify-between">
+									<div>
+										<Label className="text-sm font-medium">Chế độ tối</Label>
+										<p className="text-xs text-muted-foreground mt-1">
+											Bật/tắt giao diện tối cho ứng dụng
+										</p>
+									</div>
+									<Switch
+										checked={theme === "dark"}
+										onCheckedChange={toggleTheme}
+										aria-label="Toggle dark mode"
+									/>
+								</div>
 							</CardContent>
 						</Card>
 					)}

@@ -18,7 +18,7 @@ import TimeChoose from "./TimeChoose";
 import { LOCATIONS, SEAT_MAP, SLOT_CONFIG } from "@/lib/data";
 import { Slider } from "./ui/slider";
 import SeatMapHolder from "./SeatMapHolder";
-import { UserRound, UsersRound } from "lucide-react";
+import { Info, UserRound, UsersRound } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "./ui/dialog";
 import { toast } from "sonner";
@@ -36,39 +36,41 @@ export default function SeatOrderCard({
 	const handleTypeChange = (value: string) => {
 		setType(value);
 		setSelectedSeats([]);
-	}
+	};
 
 	const handleTableTypeChange = (value: string) => {
 		setTableType(value);
 		setSelectedSeats([]);
-	}
+	};
 
 	const handleGroupSizeChange = (value: number[]) => {
 		setGroupSize(value);
 		setSelectedSeats([]);
-	}
+	};
 
 	// Filter seats based on table type and group size
 	const filteredSeats = useMemo(() => {
 		const allSeats = SEAT_MAP[type as keyof typeof SEAT_MAP];
-		
+
 		if (tableType === "personal") {
 			// For personal mode, disable if remaining available seats < 1
-			return allSeats.map(seat => {
-				const remainingSeats = (seat.capacity || 0) - seat.occupiedSeats.length;
+			return allSeats.map((seat) => {
+				const remainingSeats =
+					(seat.capacity || 0) - seat.occupiedSeats.length;
 				return {
 					...seat,
-					disabled: remainingSeats < 1
+					disabled: remainingSeats < 1,
 				};
 			});
 		} else {
 			// For group mode, disable if remaining available seats < group size
-			return allSeats.map(seat => {
-				const remainingSeats = (seat.capacity || 0) - seat.occupiedSeats.length;
+			return allSeats.map((seat) => {
+				const remainingSeats =
+					(seat.capacity || 0) - seat.occupiedSeats.length;
 				const notEnoughRemainingSeats = remainingSeats < groupSize[0];
 				return {
 					...seat,
-					disabled: notEnoughRemainingSeats
+					disabled: notEnoughRemainingSeats,
 				};
 			});
 		}
@@ -77,18 +79,21 @@ export default function SeatOrderCard({
 	const handleConfirmation = () => {
 		toast.success("Đặt chỗ thành công!", {
 			style: {
-				background: '#d1fae5',
-				color: '#065f46',
-				border: '1px solid #6ee7b7'
-			}
+				background: "#d1fae5",
+				color: "#065f46",
+				border: "1px solid #6ee7b7",
+			},
 		});
-		localStorage.setItem("seatBooking", JSON.stringify({
-			location: type,
-			seatId: selectedSeats.join(', '),
-			tableType: tableType,
-			groupSize: tableType === "group" ? groupSize[0] : 1,
-			time: selectedTime,
-		}));
+		localStorage.setItem(
+			"seatBooking",
+			JSON.stringify({
+				location: type,
+				seatId: selectedSeats.join(", "),
+				tableType: tableType,
+				groupSize: tableType === "group" ? groupSize[0] : 1,
+				time: selectedTime,
+			})
+		);
 		onSeatBooked?.();
 	};
 
@@ -98,19 +103,22 @@ export default function SeatOrderCard({
 			e.preventDefault();
 			toast.warning("Chưa chọn thời gian hoặc chỗ ngồi!", {
 				style: {
-					background: '#fef3c7',
-					color: '#92400e',
-					border: '1px solid #fcd34d'
-				}
+					background: "#fef3c7",
+					color: "#92400e",
+					border: "1px solid #fcd34d",
+				},
 			});
-		} else if (tableType === "group" && selectedSeats.length !== requiredSeats) {
+		} else if (
+			tableType === "group" &&
+			selectedSeats.length !== requiredSeats
+		) {
 			e.preventDefault();
 			toast.warning(`Vui lòng chọn đủ ${requiredSeats} ghế!`, {
 				style: {
-					background: '#fef3c7',
-					color: '#92400e',
-					border: '1px solid #fcd34d'
-				}
+					background: "#fef3c7",
+					color: "#92400e",
+					border: "1px solid #fcd34d",
+				},
 			});
 		}
 	};
@@ -142,18 +150,18 @@ export default function SeatOrderCard({
 									<RadioGroupCardContent>
 										<div className="flex items-center gap-3 mb-2">
 											<div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center shrink-0">
-												<location.icon className="w-4 h-4" />
+												<location.icon className="w-4 h-4 dark:text-blue-500" />
 											</div>
 											<div className="flex-1 min-w-0">
 												<p className="font-medium text-xs">
 													{location.name}
-											</p>
+												</p>
+											</div>
 										</div>
-									</div>
-									<p className="text-xs text-gray-500 text-left">
-										{location.description}
-									</p>
-								</RadioGroupCardContent>
+										<p className="text-xs text-gray-500 dark:text-[#a0a0a0] group-data-[state=checked]:dark:text-white text-left">
+											{location.description}
+										</p>
+									</RadioGroupCardContent>
 								</RadioGroupCardItem>
 							))}
 						</RadioGroupCard>
@@ -180,16 +188,16 @@ export default function SeatOrderCard({
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="group">
-							<p className="mb-2">Chọn số người</p>
-							<div className="flex items-center gap-4">
-								<Slider
-									min={2}
-									max={8}
-									step={1}
-									value={groupSize}
-									onValueChange={handleGroupSizeChange}
-									className="flex-1"
-								/>
+								<p className="mb-2">Chọn số người</p>
+								<div className="flex items-center gap-4">
+									<Slider
+										min={2}
+										max={8}
+										step={1}
+										value={groupSize}
+										onValueChange={handleGroupSizeChange}
+										className="flex-1"
+									/>
 									<span className="text-sm font-medium w-8 text-center">
 										{groupSize[0]}
 									</span>
@@ -199,10 +207,16 @@ export default function SeatOrderCard({
 					</div>
 					<div>
 						<p className="mb-2">Chọn khung giờ</p>
+						<p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
+							<Info className="w-3 h-3" />
+							Homies và Thư viện chỉ hoạt động T2 - T6, Căng tin hoạt động full tuần
+						</p>
 						<TimeChoose
 							timeslot={
 								SLOT_CONFIG[
-									type.split("_")[0] as keyof typeof SLOT_CONFIG
+									type.split(
+										"_"
+									)[0] as keyof typeof SLOT_CONFIG
 								].slots
 							}
 							onTimeSelect={setSelectedTime}
@@ -242,10 +256,9 @@ export default function SeatOrderCard({
 										}
 									</p>
 									<p>
-										<span className="font-medium">
-											Số:
-										</span>{" "}
-										{selectedSeats.join(', ') || "Chưa chọn"}
+										<span className="font-medium">Số:</span>{" "}
+										{selectedSeats.join(", ") ||
+											"Chưa chọn"}
 									</p>
 									<p>
 										<span className="font-medium">

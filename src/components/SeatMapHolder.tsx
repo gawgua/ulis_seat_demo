@@ -25,7 +25,7 @@ export default function SeatMapHolder({ seats, selectedSeats, onSeatsChange, max
 				<Info className="w-3 h-3" />
 				Nếu chỗ ngồi bị làm mờ, bàn đó không phù hợp với số người bạn đang chọn
 			</p>
-			<Card className="bg-gray-100 shadow-none border-none flex-1">
+			<Card className="bg-gray-100 dark:bg-[#101010] shadow-none border-none flex-1">
 				<CardContent>
 					<SeatMap
 						seats={seats}

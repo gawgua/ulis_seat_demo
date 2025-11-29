@@ -35,7 +35,7 @@ export default function StatisticCard({
 					<Card>
 						<CardContent className="space-y-2">
 							<CardTitle>Thư viện</CardTitle>
-							<p className="text-2xl font-bold">{libraryUsage}% <span className="text-sm font-normal text-gray-600">đang được sử dụng</span></p>
+							<p className="text-2xl font-bold">{libraryUsage}% <span className="text-sm font-normal dark:text-white">đang được sử dụng</span></p>
 							<Progress
 								value={libraryUsage}
 								className={getGradientClass(libraryUsage)}
@@ -45,7 +45,7 @@ export default function StatisticCard({
 					<Card>
 						<CardContent className="space-y-2">
 							<CardTitle>Căng tin</CardTitle>
-							<p className="text-2xl font-bold">{canteenUsage}% <span className="text-sm font-normal text-gray-600">đang được sử dụng</span></p>
+							<p className="text-2xl font-bold">{canteenUsage}% <span className="text-sm font-normal dark:text-white">đang được sử dụng</span></p>
 							<Progress
 								value={canteenUsage}
 								className={getGradientClass(canteenUsage)}
@@ -55,7 +55,7 @@ export default function StatisticCard({
 					<Card>
 						<CardContent className="space-y-2">
 							<CardTitle>Homies</CardTitle>
-							<p className="text-2xl font-bold">{homiesUsage}% <span className="text-sm font-normal text-gray-600">đang được sử dụng</span></p>
+							<p className="text-2xl font-bold">{homiesUsage}% <span className="text-sm font-normal text-gray-600 dark:text-white">đang được sử dụng</span></p>
 							<Progress
 								value={homiesUsage}
 								className={getGradientClass(homiesUsage)}

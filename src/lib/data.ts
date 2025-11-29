@@ -58,11 +58,11 @@ export const SLOT_CONFIG = {
 };
 
 export const LOCATIONS = [
-	{ id: "library", name: "Thư viện", icon: LibraryBig, description: "Tầng 2 tòa C3" },
-	{ id: "canteen", name: "Căng tin B2", icon: Hamburger, description: "Tiện lợi, gần khu vực ăn uống" },
-	{ id: "homies_b2", name: "Homies B2", icon: Landmark, description: "Không gian hiện đại, thoải mái" },
-	{ id: "homies_c3", name: "Homies C3", icon: Landmark, description: "Tầng 1 tòa C3" },
-	{ id: "homies_multi", name: "Homies Đa năng", icon: Landmark, description: "Không gian tự học" },
+	{ id: "library", name: "Thư viện", icon: LibraryBig, description: "Tầng 2 tòa C3, khu công trình khoa Pháp. Yên tĩnh, chỉ có chỗ ngồi cỡ nhỏ (cho 1-2 người), nhiều ổ cắm điện." },
+	{ id: "canteen", name: "Căng tin B2", icon: Hamburger, description: "Tầng 1 tòa B2. Tiện ăn uống, thoáng mát, nhiều chỗ ngồi cỡ vừa - cỡ lớn (4 - 8 người), ít ổ cắm điện." },
+	{ id: "homies_b2", name: "Homies B2", icon: Landmark, description: "Tầng 1 tòa B2. Sáng sủa, yên tĩnh, chỉ có chỗ ngồi cỡ vừa (4-5 người), ít ổ cắm điện." },
+	{ id: "homies_c3", name: "Homies C3", icon: Landmark, description: "Tầng 1 tòa C3, khu công trình khoa Pháp. Yên tĩnh, loại chỗ ngồi đa dạng, nhiều ổ cắm điện." },
+	{ id: "homies_multi", name: "Homies Đa năng", icon: Landmark, description: "Tầng 2 nhà Đa năng. Yên tĩnh, chủ yếu là chỗ ngồi cỡ nhỏ (1 người), khá nhiều ổ cắm điện." },
 ];
 
 const HOMIES_C3_SEAT_MAP = [

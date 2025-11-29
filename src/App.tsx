@@ -73,7 +73,7 @@ function App() {
 			</main>
 
 			<footer className="text-xs font-light border-t flex justify-between p-2">
-				<span>ULIS Seat - bản demo cho sinh viên ULIS.</span>
+				<span>Bản demo cho sinh viên ULIS.</span>
 				<span>
 					<Dialog>
 						<DialogTrigger asChild>
