@@ -14,6 +14,8 @@ import { Badge } from "./ui/badge";
 import { ScrollArea } from "./ui/scroll-area";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Switch } from "./ui/switch";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { Tabs, TabsList, TabsTrigger } from "./ui/tabs";
 
 export default function PersonalInfo({
 	onLogout,
@@ -24,12 +26,13 @@ export default function PersonalInfo({
 }) {
 	const [activeCategory, setActiveCategory] = useState("info");
 	const { theme, toggleTheme } = useTheme();
+	const { language, setLanguage, t } = useLanguage();
 
 	const categories = [
-		{ id: "info", label: "Thông tin cá nhân" },
-		{ id: "password", label: "Đổi mật khẩu" },
-		{ id: "history", label: "Lịch sử đặt chỗ" },
-		{ id: "settings", label: "Cài đặt" },
+		{ id: "info", label: t("profile.personalInfo") },
+		{ id: "password", label: t("profile.changePassword") },
+		{ id: "history", label: t("profile.bookingHistory") },
+		{ id: "settings", label: t("profile.settings") },
 	];
 
 	const handleLogout = () => {
@@ -72,32 +75,32 @@ export default function PersonalInfo({
 					{activeCategory === "info" && (
 						<Card>
 							<CardHeader>
-								<CardTitle>Thông tin cá nhân</CardTitle>
+								<CardTitle>{t("profile.personalInfo")}</CardTitle>
 								<CardDescription>
-									Quản lý thông tin tài khoản của bạn
+									{t("profile.manageAccount")}
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-4">
 								<div>
-									<Label>Họ và tên</Label>
+									<Label>{t("profile.name")}</Label>
 									<p className="text-sm mt-1">
 										Nguyễn Văn A
 									</p>
 								</div>
 								<div>
-									<Label>Khoa</Label>
+									<Label>{t("profile.faculty")}</Label>
 									<p className="text-sm mt-1">
-										Khoa NN&VH Anh
+										{t("header.faculty")}
 									</p>
 								</div>
 								<div>
-									<Label>Email</Label>
+									<Label>{t("profile.email")}</Label>
 									<p className="text-sm mt-1">
 										24xxxxxx@ulis.vnu.edu.vn
 									</p>
 								</div>
 								<div>
-									<Label>Mã sinh viên</Label>
+									<Label>{t("profile.studentId")}</Label>
 									<p className="text-sm mt-1">24xxxxxx</p>
 								</div>
 							</CardContent>
@@ -107,34 +110,34 @@ export default function PersonalInfo({
 					{activeCategory === "password" && (
 						<Card>
 							<CardHeader>
-								<CardTitle>Đổi mật khẩu</CardTitle>
+								<CardTitle>{t("profile.changePassword")}</CardTitle>
 								<CardDescription>
-									Cập nhật mật khẩu của bạn
+									{t("profile.updatePasswordDesc")}
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-4">
 								<div>
-									<Label>Mật khẩu hiện tại</Label>
+									<Label>{t("profile.currentPassword")}</Label>
 									<input
 										type="password"
 										className="w-full mt-1 px-3 py-2 border rounded-md"
 									/>
 								</div>
 								<div>
-									<Label>Mật khẩu mới</Label>
+									<Label>{t("profile.newPassword")}</Label>
 									<input
 										type="password"
 										className="w-full mt-1 px-3 py-2 border rounded-md"
 									/>
 								</div>
 								<div>
-									<Label>Xác nhận mật khẩu mới</Label>
+									<Label>{t("profile.confirmPassword")}</Label>
 									<input
 										type="password"
 										className="w-full mt-1 px-3 py-2 border rounded-md"
 									/>
 								</div>
-								<Button>Cập nhật mật khẩu</Button>
+								<Button>{t("profile.updatePassword")}</Button>
 							</CardContent>
 						</Card>
 					)}
@@ -142,9 +145,9 @@ export default function PersonalInfo({
 					{activeCategory === "history" && (
 						<Card>
 							<CardHeader>
-								<CardTitle>Lịch sử đặt chỗ</CardTitle>
+								<CardTitle>{t("profile.bookingHistory")}</CardTitle>
 								<CardDescription>
-									Xem các lần đặt chỗ trước đây
+									{t("profile.viewHistory")}
 								</CardDescription>
 							</CardHeader>
 							<CardContent>
@@ -156,10 +159,10 @@ export default function PersonalInfo({
 													<div className="flex items-center gap-2 mb-1">
 														<p className="font-medium text-sm">{item.location}</p>
 														<Badge variant={item.status === "completed" ? "default" : "outline"}>
-															{item.status === "completed" ? "Hoàn thành" : "Đã hủy"}
+															{item.status === "completed" ? t("profile.completed") : t("profile.cancelled")}
 														</Badge>
 													</div>
-													<p className="text-xs text-gray-500">Chỗ: {item.seat} • {item.time}</p>
+													<p className="text-xs text-gray-500">{t("current.seat")} {item.seat} • {item.time}</p>
 													<p className="text-xs text-gray-500">{item.date}</p>
 												</div>
 											</div>
@@ -173,17 +176,17 @@ export default function PersonalInfo({
 					{activeCategory === "settings" && (
 						<Card>
 							<CardHeader>
-								<CardTitle>Cài đặt</CardTitle>
+								<CardTitle>{t("profile.settings")}</CardTitle>
 								<CardDescription>
-									Tùy chỉnh trải nghiệm của bạn
+									{t("profile.customizeExp")}
 								</CardDescription>
 							</CardHeader>
-							<CardContent className="space-y-4">
+							<CardContent className="space-y-6">
 								<div className="flex items-center justify-between">
 									<div>
-										<Label className="text-sm font-medium">Chế độ tối</Label>
+										<Label className="text-sm font-medium">{t("profile.darkMode")}</Label>
 										<p className="text-xs text-muted-foreground mt-1">
-											Bật/tắt giao diện tối cho ứng dụng
+											{t("profile.darkMode.desc")}
 										</p>
 									</div>
 									<Switch
@@ -191,6 +194,20 @@ export default function PersonalInfo({
 										onCheckedChange={toggleTheme}
 										aria-label="Toggle dark mode"
 									/>
+								</div>
+								<div>
+									<div className="mb-2">
+										<Label className="text-sm font-medium">{t("profile.language")}</Label>
+										<p className="text-xs text-muted-foreground mt-1">
+											{t("profile.language.desc")}
+										</p>
+									</div>
+									<Tabs value={language} onValueChange={(val) => setLanguage(val as "vi" | "en")}>
+										<TabsList className="w-full">
+											<TabsTrigger value="vi" className="flex-1">Tiếng Việt</TabsTrigger>
+											<TabsTrigger value="en" className="flex-1">English</TabsTrigger>
+										</TabsList>
+									</Tabs>
 								</div>
 							</CardContent>
 						</Card>
@@ -203,7 +220,7 @@ export default function PersonalInfo({
 					className="border-red-500 text-red-500 hover:bg-red-50 portrait:mr-8"
 					onClick={handleLogout}
 				>
-					Đăng xuất
+					{t("profile.logout")}
 				</Button>
 			</div>
 		</div>

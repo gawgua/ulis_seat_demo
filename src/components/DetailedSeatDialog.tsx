@@ -8,9 +8,10 @@ import {
 	DialogClose,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import type { SeatPositionType } from "@/lib/data";
+import { SEAT_LEGEND, type SeatPositionType } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface DetailedSeat {
 	id: string;
@@ -42,7 +43,8 @@ export function DetailedSeatDialog({
 	maxSeats,
 	tableType,
 }: DetailedSeatDialogProps) {
-
+	const { t } = useLanguage();
+	
 	// Generate seats based on capacity
 	const generateSeats = (): DetailedSeat[] => {
 		const seats: DetailedSeat[] = [];
@@ -175,19 +177,25 @@ export function DetailedSeatDialog({
 							</button>
 						))}
 					</div>
-					<div className="flex gap-4 text-xs text-gray-600 dark:text-[#a0a0a0]">
-						<div className="flex items-center gap-2">
-							<div className="w-4 h-4 bg-white border-2 border-gray-400 rounded"></div>
-							<span>Còn trống</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="w-4 h-4 bg-blue-500 border-2 border-blue-600 rounded"></div>
-							<span>Đã chọn</span>
-						</div>
-						<div className="flex items-center gap-2">
-							<div className="w-4 h-4 bg-gray-400 border-2 border-gray-500 rounded"></div>
-							<span>Đã có người</span>
-						</div>
+					<div className="flex gap-4 text-xs text-gray-600 dark:text-[#a0a0a0]			">
+						{SEAT_LEGEND.map((item) => (
+							<div key={item.id} className="flex items-center gap-2">
+								<div
+									className={cn(
+										"w-4 h-4 border-2 rounded",
+										item.color,
+										item.id === "empty"
+											? "border-gray-400"
+											: item.id === "picked"
+											? "border-blue-600"
+											: "border-gray-500"
+									)}
+								></div>
+								<span>
+									{t(`seatMap.${item.id}`)}
+								</span>
+							</div>
+						))}
 					</div>
 					<div className="flex gap-2 justify-end mt-4">
 						<DialogClose asChild>

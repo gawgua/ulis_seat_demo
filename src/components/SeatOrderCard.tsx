@@ -22,11 +22,13 @@ import { Info, UserRound, UsersRound, Wand } from "lucide-react";
 import { Button } from "./ui/button";
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "./ui/dialog";
 import { toast } from "sonner";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function SeatOrderCard({
 	className,
 	onSeatBooked,
 }: React.ComponentProps<"div"> & { onSeatBooked?: () => void }) {
+	const { t } = useLanguage();
 	const [type, setType] = useState("library");
 	const [groupSize, setGroupSize] = useState([2]);
 	const [selectedTime, setSelectedTime] = useState("");
@@ -64,7 +66,7 @@ export default function SeatOrderCard({
 	}, [type, tableType, groupSize]);
 
 	const handleConfirmation = () => {
-		toast.success("Đặt chỗ thành công!", {
+		toast.success(t("seatOrder.bookingSuccess"), {
 			style: {
 				background: "#d1fae5",
 				color: "#065f46",
@@ -87,7 +89,7 @@ export default function SeatOrderCard({
 	const handleAutoSelect = (e: React.MouseEvent) => {
 		if (!selectedTime) {
 			e.preventDefault();
-			toast.warning("Vui lòng chọn thời gian trước!", {
+			toast.warning(t("seatOrder.selectTimeFirst"), {
 				style: {
 					background: "#fef3c7",
 					color: "#92400e",
@@ -111,15 +113,15 @@ export default function SeatOrderCard({
 			);
 
 			if (availableSeats.length >= requiredSeats) {
-				// Select the required number of seats from this table
+				// Select the required number of seats from this table with table number prefix
 				const selectedFromTable = availableSeats.slice(
 					0,
 					requiredSeats
-				);
+				).map(seatPos => `${seat.id}-${seatPos}`);
 				setSelectedSeats(selectedFromTable);
 
 				toast.success(
-					`Đã tự động chọn ${requiredSeats} chỗ tại bàn ${seat.id}!`,
+					t("seatOrder.autoSelectSuccess", requiredSeats, seat.id),
 					{
 						style: {
 							background: "#d1fae5",
@@ -134,7 +136,7 @@ export default function SeatOrderCard({
 
 		// If no suitable table found
 		e.preventDefault();
-		toast.error("Không tìm thấy bàn phù hợp!", {
+		toast.error(t("seatOrder.noSuitableTable"), {
 			style: {
 				background: "#fee2e2",
 				color: "#991b1b",
@@ -147,7 +149,7 @@ export default function SeatOrderCard({
 		const requiredSeats = tableType === "group" ? groupSize[0] : 1;
 		if (!selectedTime || selectedSeats.length === 0) {
 			e.preventDefault();
-			toast.warning("Chưa chọn thời gian hoặc chỗ ngồi!", {
+			toast.warning(t("seatOrder.missingTimeOrSeat"), {
 				style: {
 					background: "#fef3c7",
 					color: "#92400e",
@@ -159,7 +161,7 @@ export default function SeatOrderCard({
 			selectedSeats.length !== requiredSeats
 		) {
 			e.preventDefault();
-			toast.warning(`Vui lòng chọn đủ ${requiredSeats} ghế!`, {
+			toast.warning(t("seatOrder.selectEnoughSeats", requiredSeats), {
 				style: {
 					background: "#fef3c7",
 					color: "#92400e",
@@ -172,16 +174,16 @@ export default function SeatOrderCard({
 	return (
 		<Card className={cn("", className)}>
 			<CardHeader className="pb-3">
-				<CardTitle className="text-xl">Đặt chỗ trước</CardTitle>
+				<CardTitle className="text-xl">{t("seatOrder.title")}</CardTitle>
 				<CardDescription>
-					Chọn địa điểm, loại bàn và khung giờ
+					{t("seatOrder.description")}
 				</CardDescription>
 			</CardHeader>
 			<Separator />
 			<CardContent className="landscape:grid landscape:grid-cols-2 landscape:gap-4">
 				<div className="space-y-4 mb-4 landscape:mb-0">
 					<div>
-						<p className="mb-2">Địa điểm</p>
+						<p className="mb-2">{t("seatOrder.location")}</p>
 						<RadioGroupCard
 							defaultValue="library"
 							className="grid grid-cols-2 sm:grid-cols-3 gap-4"
@@ -205,7 +207,7 @@ export default function SeatOrderCard({
 											</div>
 										</div>
 										<p className="text-xs text-gray-500 dark:text-[#a0a0a0] group-data-[state=checked]:dark:text-white text-left">
-											{location.description}
+											{t(location.description)}
 										</p>
 									</RadioGroupCardContent>
 								</RadioGroupCardItem>
@@ -213,7 +215,7 @@ export default function SeatOrderCard({
 						</RadioGroupCard>
 					</div>
 					<div>
-						<p className="mb-2">Loại bàn</p>
+						<p className="mb-2">{t("seatOrder.tableType")}</p>
 						<Tabs
 							defaultValue="personal"
 							onValueChange={handleTableTypeChange}
@@ -224,17 +226,17 @@ export default function SeatOrderCard({
 									className="cursor-pointer"
 								>
 									<UserRound />
-									Cá nhân
+									{t("seatOrder.personal")}
 								</TabsTrigger>
 								<TabsTrigger
 									value="group"
 									className="cursor-pointer"
 								>
-									<UsersRound /> Nhóm
+									<UsersRound /> {t("seatOrder.group")}
 								</TabsTrigger>
 							</TabsList>
 							<TabsContent value="group">
-								<p className="mb-2">Chọn số người</p>
+								<p className="mb-2">{t("seatOrder.selectPeople")}</p>
 								<div className="flex items-center gap-4">
 									<Slider
 										min={2}
@@ -252,11 +254,10 @@ export default function SeatOrderCard({
 						</Tabs>
 					</div>
 					<div>
-						<p className="mb-2">Chọn khung giờ</p>
+						<p className="mb-2">{t("seatOrder.selectTime")}</p>
 						<p className="text-xs text-gray-500 mb-2 flex items-center gap-1">
 							<Info className="w-3 h-3" />
-							Homies và Thư viện chỉ hoạt động T2 - T6, Căng tin
-							hoạt động full tuần
+							{t("seatOrder.timeInfo")}
 						</p>
 						<TimeChoose
 							timeslot={
@@ -284,11 +285,11 @@ export default function SeatOrderCard({
 						<DialogTrigger asChild onClick={handleAutoSelect}>
 							<Button className="bg-blue-400 hover:bg-blue-300 dark:text-white">
 								<Wand />
-								Tự động chọn chỗ
+								{t("seatOrder.autoSelect")}
 							</Button>
 						</DialogTrigger>
 						<DialogTrigger asChild onClick={handleDialogTrigger}>
-							<Button>Xác nhận</Button>
+							<Button>{t("seatOrder.confirm")}</Button>
 						</DialogTrigger>
 						<DialogContent
 							showCloseButton={true}
@@ -296,12 +297,12 @@ export default function SeatOrderCard({
 						>
 							<div className="space-y-4">
 								<h3 className="text-lg font-semibold">
-									Thông tin chi tiết
+									{t("seatOrder.detailInfo")}
 								</h3>
 								<div className="space-y-2 text-sm">
 									<p>
 										<span className="font-medium">
-											Địa điểm:
+											{t("seatOrder.location")}:
 										</span>{" "}
 										{
 											LOCATIONS.find((l) => l.id === type)
@@ -309,23 +310,23 @@ export default function SeatOrderCard({
 										}
 									</p>
 									<p>
-										<span className="font-medium">Số:</span>{" "}
+										<span className="font-medium">{t("seatOrder.seatNumber")}:</span>{" "}
 										{selectedSeats.join(", ") ||
-											"Chưa chọn"}
+											t("seatOrder.notSelected")}
 									</p>
 									<p>
 										<span className="font-medium">
-											Loại bàn:
+											{t("seatOrder.tableType")}:
 										</span>{" "}
 										{tableType === "personal"
-											? "Cá nhân"
-											: `Nhóm (${groupSize[0]} người)`}
+											? t("seatOrder.personal")
+											: t("seatOrder.groupWith", groupSize[0])}
 									</p>
 									<p>
 										<span className="font-medium">
-											Thời gian:
+											{t("seatOrder.time")}:
 										</span>{" "}
-										{selectedTime || "Chưa chọn"}
+										{selectedTime || t("seatOrder.notSelected")}
 									</p>
 								</div>
 								<DialogClose>
@@ -333,7 +334,7 @@ export default function SeatOrderCard({
 										className="w-full"
 										onClick={handleConfirmation}
 									>
-										Xác nhận đặt chỗ
+										{t("seatOrder.confirmBooking")}
 									</Button>
 								</DialogClose>
 							</div>

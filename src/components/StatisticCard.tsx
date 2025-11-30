@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Progress } from "./ui/progress";
 import { useState } from "react";
 import { MOCK_TOP_SEAT } from "@/lib/data";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function StatisticCard({
 	className,
@@ -10,6 +11,7 @@ export default function StatisticCard({
 	const [libraryUsage, _setLibraryUsage] = useState(50);
 	const [canteenUsage, _setCanteenUsage] = useState(30);
 	const [homiesUsage, _setHomiesUsage] = useState(70);
+	const { t } = useLanguage();
 
 	const formatTime = (seconds: number) => {
 		const hours = Math.floor(seconds / 3600);
@@ -28,14 +30,14 @@ export default function StatisticCard({
 	return (
 		<Card className={cn("h-fit", className)}>
 			<CardHeader>
-				<CardTitle className="text-xl">Tổng quan hôm nay</CardTitle>
+				<CardTitle className="text-xl">{t("stats.title")}</CardTitle>
 			</CardHeader>
 			<CardContent className="space-y-4">
 				<div className="grid grid-cols-3 gap-4">
 					<Card>
 						<CardContent className="space-y-2">
-							<CardTitle>Thư viện</CardTitle>
-							<p className="text-2xl font-bold">{libraryUsage}% <span className="text-sm font-normal dark:text-white">đang được sử dụng</span></p>
+							<CardTitle>{t("location.library")}</CardTitle>
+							<p className="text-2xl font-bold">{libraryUsage}% <span className="text-sm font-normal dark:text-white">{t("stats.occupied").toLowerCase()}</span></p>
 							<Progress
 								value={libraryUsage}
 								className={getGradientClass(libraryUsage)}
@@ -44,8 +46,8 @@ export default function StatisticCard({
 					</Card>
 					<Card>
 						<CardContent className="space-y-2">
-							<CardTitle>Căng tin</CardTitle>
-							<p className="text-2xl font-bold">{canteenUsage}% <span className="text-sm font-normal dark:text-white">đang được sử dụng</span></p>
+							<CardTitle>{t("location.canteen")}</CardTitle>
+							<p className="text-2xl font-bold">{canteenUsage}% <span className="text-sm font-normal dark:text-white">{t("stats.occupied").toLowerCase()}</span></p>
 							<Progress
 								value={canteenUsage}
 								className={getGradientClass(canteenUsage)}
@@ -55,7 +57,7 @@ export default function StatisticCard({
 					<Card>
 						<CardContent className="space-y-2">
 							<CardTitle>Homies</CardTitle>
-							<p className="text-2xl font-bold">{homiesUsage}% <span className="text-sm font-normal text-gray-600 dark:text-white">đang được sử dụng</span></p>
+							<p className="text-2xl font-bold">{homiesUsage}% <span className="text-sm font-normal dark:text-white">{t("stats.occupied").toLowerCase()}</span></p>
 							<Progress
 								value={homiesUsage}
 								className={getGradientClass(homiesUsage)}
@@ -65,12 +67,12 @@ export default function StatisticCard({
 				</div>
 				<Card>
 					<CardContent className="space-y-4">
-						<CardTitle>Bảng vàng học tập</CardTitle>
+						<CardTitle>{t("stats.topSeats")}</CardTitle>
 						<div className="space-y-2">
 							<div className="grid grid-cols-3 gap-4 font-semibold text-sm border-b pb-2">
-								<div>MSV</div>
-								<div>Họ tên</div>
-								<div>Thời gian</div>
+								<div>{t("seatOrder.seatNumber")}</div>
+								<div>{t("seatOrder.location")}</div>
+								<div>{t("stats.occupied")}</div>
 							</div>
 							{MOCK_TOP_SEAT.map((student) => (
 								<div key={student.id} className="grid grid-cols-3 gap-4 text-sm">

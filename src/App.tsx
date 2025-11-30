@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogTrigger } from "./components/ui/dialog";
 import Report from "./components/Report";
 import CurrentSeatCard from "./components/CurrentSeatCard";
 import LandingPage from "./components/LandingPage";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 function App() {
 	const [user, setUser] = useState(localStorage.getItem("user") || "");
@@ -16,6 +17,7 @@ function App() {
 	});
 	const [isWideScreen, setIsWideScreen] = useState(false);
 	const [showLanding, setShowLanding] = useState(true);
+	const { t } = useLanguage();
 
 	useEffect(() => {
 		const checkAspectRatio = () => {
@@ -42,6 +44,23 @@ function App() {
 	const handleEndSession = () => {
 		setSeatBooking(null);
 	};
+
+	// Listen for localStorage changes to update seatBooking
+	useEffect(() => {
+		const handleStorageChange = () => {
+			const saved = localStorage.getItem("seatBooking");
+			if (saved) {
+				setSeatBooking(JSON.parse(saved));
+			} else {
+				setSeatBooking(null);
+			}
+		};
+
+		// Poll localStorage every second for changes
+		const interval = setInterval(handleStorageChange, 1000);
+		
+		return () => clearInterval(interval);
+	}, []);
 
 	return (
 		<div className="flex flex-col min-h-screen">
@@ -102,12 +121,12 @@ function App() {
 			</main>
 
 			<footer className="text-xs font-light border-t flex justify-between p-2">
-				<span>Bản demo cho sinh viên ULIS.</span>
+				<span>{t("app.footer")}</span>
 				<span>
 					<Dialog>
 						<DialogTrigger asChild>
 							<a className="ml-2 cursor-pointer">
-								Góp ý, phản hồi
+								{t("app.feedback")}
 							</a>
 						</DialogTrigger>
 						<DialogContent

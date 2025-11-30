@@ -226,17 +226,17 @@ export const SEAT_MAP = {
 };
 
 export const SEAT_LEGEND = [
-	{ id: "empty", label: "Chỗ trống", color: "bg-white" },
-	{ id: "picked", label: "Đã chọn", color: "bg-blue-500" },
-	{ id: "occupied", label: "Đã được đặt", color: "bg-gray-400" },
+	{ id: "empty", color: "bg-white" },
+	{ id: "picked", color: "bg-blue-500" },
+	{ id: "occupied", color: "bg-gray-400" },
 ];
 
 export const MOCK_TOP_SEAT = [
-	{ id: "23040001", name: "Nguyễn Văn A", time: 163800 },
-	{ id: "25040021", name: "Trần Thị B", time: 152100 },
-	{ id: "23040021", name: "Lê Hoàng C", time: 139500 },
+	{ id: "23040001", name: "Nguyễn Văn U", time: 163800 },
+	{ id: "25040021", name: "Trần Thị E", time: 152100 },
+	{ id: "23040021", name: "Lê Hoàng T", time: 139500 },
 	{ id: "24020254", name: "@nguen", time: 127200 },
-	{ id: "24040020", name: "Vũ Thu E", time: 115800 },
+	{ id: "24040020", name: "Lê Thị G", time: 115800 },
 ];
 
 export const MOCK_HISTORY = [
