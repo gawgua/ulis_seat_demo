@@ -1,8 +1,9 @@
 import { Button } from "./ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { LibraryBig, Hamburger, Landmark, Clock, MapPin, Users } from "lucide-react";
+import { Clock, MapPin, Users } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { LOCATIONS } from "@/lib/data";
 
 const HERO_IMAGES = [
 	"./landing_1.jpg",
@@ -13,6 +14,8 @@ const HERO_IMAGES = [
 
 export default function LandingPage({ onGetStarted }: { onGetStarted: () => void }) {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+	const [selectedLocationIndex, setSelectedLocationIndex] = useState(LOCATIONS.length);
+	const [isTransitioning, setIsTransitioning] = useState(true);
 	const { t } = useLanguage();
 
 	useEffect(() => {
@@ -22,6 +25,34 @@ export default function LandingPage({ onGetStarted }: { onGetStarted: () => void
 
 		return () => clearInterval(interval);
 	}, []);
+
+	// Auto-scroll through locations with infinite loop
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setIsTransitioning(true);
+			setSelectedLocationIndex((prev) => prev + 1);
+		}, 3000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	// Handle infinite loop reset - reset to middle set when reaching end
+	useEffect(() => {
+		if (selectedLocationIndex >= LOCATIONS.length * 2) {
+			// Disable transitions immediately
+			setIsTransitioning(false);
+			
+			// Wait for the DOM to process the transition disable
+			setTimeout(() => {
+				setSelectedLocationIndex(LOCATIONS.length);
+				
+				// Re-enable transitions after the instant reset
+				setTimeout(() => {
+					setIsTransitioning(true);
+				}, 50);
+			}, 50);
+		}
+	}, [selectedLocationIndex]);
 
 	return (
 		<div className="min-h-screen flex flex-col">
@@ -151,66 +182,124 @@ export default function LandingPage({ onGetStarted }: { onGetStarted: () => void
 					<h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900 dark:text-white">
 						{t("landing.locations.title")}
 					</h2>
-					<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-						<Card>
-							<CardHeader>
-								<LibraryBig className="w-8 h-8 mb-2 text-blue-600" />
-								<CardTitle>{t("location.library")}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<p className="text-sm text-gray-600 dark:text-gray-400">
-									{t("location.library.desc")}
-								</p>
-							</CardContent>
-						</Card>
+					
+					{/* Image Carousel Section */}
+					<div className="relative overflow-hidden min-h-[700px] rounded-2xl flex items-end pb-12">
+						{/* Background Image */}
+						<div className="absolute inset-0 z-0">
+							{LOCATIONS.map((location, index) => (
+								<div
+									key={location.id}
+									className={`absolute inset-0 ${isTransitioning ? 'transition-opacity duration-1000' : ''} ${
+										index === (selectedLocationIndex % LOCATIONS.length) ? "opacity-100" : "opacity-0"
+									}`}
+									style={{
+										backgroundImage: `url(${location.image})`,
+										backgroundSize: "cover",
+										backgroundPosition: "center",
+									}}
+								>
+									<div className="absolute inset-0 bg-linear-to-t from-white/95 via-white/80 to-white/60 dark:from-gray-900/95 dark:via-gray-900/80 dark:to-gray-900/60"></div>
+								</div>
+							))}
+						</div>
 
-						<Card>
-							<CardHeader>
-								<Hamburger className="w-8 h-8 mb-2 text-blue-600" />
-								<CardTitle>{t("location.canteen")}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<p className="text-sm text-gray-600 dark:text-gray-400">
-									{t("location.canteen.desc")}
-								</p>
-							</CardContent>
-						</Card>
+						<div className="relative z-10 w-full pb-8 px-4">
+							{/* Horizontal scrolling carousel */}
+							<div className="relative overflow-hidden py-8">
+								<div 
+									className={`flex gap-6 ${isTransitioning ? 'transition-transform duration-500 ease-in-out' : ''}`}
+									style={{
+										transform: `translateX(calc(50% - ${selectedLocationIndex * (100 / LOCATIONS.length)}% - ${(100 / LOCATIONS.length) / 2}%))`
+									}}
+								>
+							{[...LOCATIONS, ...LOCATIONS, ...LOCATIONS].map((location, index) => {
+								const Icon = location.icon;
+								const actualIndex = index % LOCATIONS.length;
+								const isSelected = index === selectedLocationIndex;
+								
+								return (
+									<div
+										key={`${location.id}-${index}`}
+										className="shrink-0 transition-all duration-500"
+										style={{
+											width: `calc(${100 / LOCATIONS.length}% - ${(LOCATIONS.length - 1) * 24 / LOCATIONS.length}px)`
+										}}
+										onClick={() => {
+											setIsTransitioning(true);
+											setSelectedLocationIndex(actualIndex);
+										}}
+									>
+										<Card 
+											className={`cursor-pointer transition-all duration-500 h-full ${
+												isSelected 
+														? "scale-125 shadow-2xl" 
+														: "scale-95 hover:scale-100 hover:shadow-lg"
+											}`}
+										>
+											<CardHeader>
+												<Icon className={`w-8 h-8 mb-2 transition-colors ${
+													isSelected ? "text-blue-600" : "text-blue-500"
+												}`} />
+												<CardTitle className={isSelected ? "text-blue-600" : ""}>
+													{t(`location.${location.id}`)}
+												</CardTitle>
+											</CardHeader>
+											<CardContent>
+												<p className={`text-sm ${
+													isSelected 
+														? "text-gray-800 dark:text-gray-200" 
+														: "text-gray-600 dark:text-gray-400"
+												}`}>
+													{t(`location.${location.id}.desc`)}
+												</p>
+											</CardContent>
+										</Card>
+									</div>
+								);
+							})}
+						</div>
+					</div>
 
-						<Card>
-							<CardHeader>
-								<Landmark className="w-8 h-8 mb-2 text-blue-600" />
-								<CardTitle>{t("location.homies_b2")}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<p className="text-sm text-gray-600 dark:text-gray-400">
-									{t("location.homies_b2.desc")}
-								</p>
-							</CardContent>
-						</Card>
+					{/* Dots indicator */}
+					<div className="flex justify-center gap-2 mt-8">
+						{LOCATIONS.map((_, index) => (
+							<button
+								key={index}
+								onClick={() => {
+									setIsTransitioning(true);
+									setSelectedLocationIndex(index);
+								}}
+								className={`w-2 h-2 rounded-full transition-all ${
+									index === (selectedLocationIndex % LOCATIONS.length)
+										? "bg-blue-600 w-8" 
+										: "bg-gray-400 hover:bg-gray-500"
+								}`}
+								aria-label={`Go to location ${index + 1}`}
+							/>
+						))}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
 
-						<Card>
-							<CardHeader>
-								<Landmark className="w-8 h-8 mb-2 text-blue-600" />
-								<CardTitle>{t("location.homies_c3")}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<p className="text-sm text-gray-600 dark:text-gray-400">
-									{t("location.homies_c3.desc")}
-								</p>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<Landmark className="w-8 h-8 mb-2 text-blue-600" />
-								<CardTitle>{t("location.homies_multi")}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<p className="text-sm text-gray-600 dark:text-gray-400">
-									{t("location.homies_multi.desc")}
-								</p>
-							</CardContent>
-						</Card>
+			{/* Video Demo Section */}
+			<section className="py-16 px-4 bg-gray-50 dark:bg-gray-800">
+				<div className="max-w-4xl mx-auto">
+					<h2 className="text-3xl md:text-4xl font-bold text-center mb-8 text-gray-900 dark:text-white">
+						{t("landing.video.title")}
+					</h2>
+					<div className="aspect-video w-full rounded-lg overflow-hidden shadow-xl">
+						<iframe
+							width="100%"
+							height="100%"
+							src="https://www.youtube.com/embed/T5vg_Kng2sA"
+							title="YouTube video player"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							allowFullScreen
+							className="w-full h-full"
+						></iframe>
 					</div>
 				</div>
 			</section>

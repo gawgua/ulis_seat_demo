@@ -38,16 +38,24 @@ export default function SeatOrderCard({
 	const handleTypeChange = (value: string) => {
 		setType(value);
 		setSelectedSeats([]);
+		setSelectedTime("");
 	};
 
 	const handleTableTypeChange = (value: string) => {
 		setTableType(value);
 		setSelectedSeats([]);
+		setSelectedTime("");
 	};
 
 	const handleGroupSizeChange = (value: number[]) => {
 		setGroupSize(value);
 		setSelectedSeats([]);
+		setSelectedTime("");
+	};
+
+	const handleSeatsChange = (seats: string[]) => {
+		setSelectedSeats(seats);
+		setSelectedTime(""); // Clear selected time when seat changes
 	};
 
 	// Filter seats based on table type and group size
@@ -64,6 +72,19 @@ export default function SeatOrderCard({
 			};
 		});
 	}, [type, tableType, groupSize]);
+
+	// Get occupied time slots for currently selected seat(s)
+	const occupiedTimeSlots = useMemo(() => {
+		if (selectedSeats.length === 0) return [];
+		
+		const allSeats = SEAT_MAP[type as keyof typeof SEAT_MAP];
+		// Get the table ID from the first selected seat (handle both "tableId" and "tableId-position" formats)
+		const firstSeatId = selectedSeats[0];
+		const tableId = firstSeatId.includes('-') ? firstSeatId.split('-')[0] : firstSeatId;
+		
+		const selectedSeat = allSeats.find(seat => seat.id === tableId);
+		return selectedSeat?.occupiedTimeSlots || [];
+	}, [selectedSeats, type]);
 
 	const handleConfirmation = () => {
 		toast.success(t("seatOrder.bookingSuccess"), {
@@ -268,6 +289,8 @@ export default function SeatOrderCard({
 								].slots
 							}
 							onTimeSelect={setSelectedTime}
+							occupiedTimeSlots={occupiedTimeSlots}
+							selectedTime={selectedTime}
 						/>
 					</div>
 				</div>
@@ -275,7 +298,7 @@ export default function SeatOrderCard({
 					<SeatMapHolder
 						seats={filteredSeats}
 						selectedSeats={selectedSeats}
-						onSeatsChange={setSelectedSeats}
+						onSeatsChange={handleSeatsChange}
 						maxSeats={tableType === "group" ? groupSize[0] : 1}
 						tableType={tableType}
 					/>

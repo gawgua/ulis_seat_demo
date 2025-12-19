@@ -31,7 +31,7 @@ const RadioGroupCardItem = React.forwardRef<
       <Card className={cn(
         "cursor-pointer transition-all hover:border-blue-300 shadow-none",
         "group-focus:outline-none group-focus-visible:ring-2 group-focus-visible:ring-blue-500 group-focus-visible:ring-offset-2",
-        "group-disabled:cursor-not-allowed group-disabled:opacity-50",
+        "group-disabled:cursor-not-allowed group-disabled:opacity-40 group-disabled:bg-gray-100 group-disabled:dark:bg-gray-800 group-disabled:hover:border-gray-200",
         "group-data-[state=checked]:border-blue-600 group-data-[state=checked]:bg-blue-50 group-data-[state=checked]:dark:bg-blue-400",
       )}>
         {children}
