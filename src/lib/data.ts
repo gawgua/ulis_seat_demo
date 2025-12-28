@@ -1,4 +1,4 @@
-import { Hamburger, Landmark, LibraryBig } from "lucide-react";
+import { Landmark, LibraryBig } from "lucide-react";
 
 export const SeatPosition = {
 	A: "A",

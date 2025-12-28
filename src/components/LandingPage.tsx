@@ -294,8 +294,8 @@ export default function LandingPage({ onGetStarted }: { onGetStarted: () => void
 						<iframe
 							width="100%"
 							height="100%"
-							src="https://www.youtube.com/embed/T5vg_Kng2sA"
-							title="YouTube video player"
+							src="./hdsd_video.mp4"
+							title="Tutorial"
 							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 							allowFullScreen
 							className="w-full h-full"
